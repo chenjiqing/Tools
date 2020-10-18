@@ -9,6 +9,19 @@ WebPageCache = {}
 QtWebUrlPrefix = "https://doc.qt.io/qt-5/"
 
 
+def _parent_class(class_name):
+    pos = class_name.find("::")
+    if pos != -1:
+        class_name = class_name[:pos]
+    return class_name
+
+
+def _convert_class_name_to_file_name(class_name):
+    class_name = class_name.replace("::", "-")
+    class_name = class_name.replace("_", "-")
+    return class_name
+
+
 def _convert_function_title_to_url(title):
     # remove link in title
     title = re.sub(r"\[(.*?)\]\(.*?\)", r"\1", title)
@@ -69,10 +82,11 @@ def _fix_qt_class_link(markdown, links):
         lst = link[1:-1].split("](")
         text = lst[0]
         url = lst[1].lower()
-        if text[0] != "Q" or "%s%s.html" % (QtWebUrlPrefix, text.lower()) != url:
+        filename = _convert_class_name_to_file_name(text)
+        if text[0] != "Q" or "%s%s.html" % (QtWebUrlPrefix, filename.lower()) != url:
             left_links.append(link)
             continue
-        actual_url = "../../%s/%s/%s.md" % (text[1], text, text)
+        actual_url = "../../%s/%s/%s.md" % (text[1], _parent_class(text), filename)
         actual_link = link.replace(url, actual_url)
         print("Fix %s -> %s" % (link, actual_link))
         markdown = markdown.replace(link, actual_link)
