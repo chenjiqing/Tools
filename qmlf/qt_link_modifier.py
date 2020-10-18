@@ -13,7 +13,7 @@ def _convert_function_title_to_url(title):
     # remove link in title
     title = re.sub(r"\[(.*?)\]\(.*?\)", r"\1", title)
     title = " ".join(title.split())
-    title = re.sub(r"[^a-zA-Z0-9 ]", '', title)
+    title = re.sub(r"[^a-zA-Z0-9_ ]", '', title)
     title = title.strip().lower()
     title = title.replace(" ", "-")
     return title
